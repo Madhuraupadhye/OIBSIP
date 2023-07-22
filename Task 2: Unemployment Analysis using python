@@ -1,0 +1,74 @@
+import pandas as pd 
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+data = pd.read_csv("Unemployment_Rate_upto_11_2020.csv")
+data
+
+#data preprocessing
+data.info()
+data.shape
+data.isnull().sum()
+
+#Heatmap
+fig, ax = plt.subplots(figsize=(7,7))
+sns.heatmap(data.corr(numeric_only = True),ax=ax)
+plt.show()
+
+
+data.columns = ["States","Date","Frequency",
+               "Unemployment Rate (%)","Estimated Employed",
+               " Estimated Labour Participation Rate (%)","Region","Longitude",
+               "Latitude"]
+
+data.head()
+
+# Convert the "Date" column to datetime format
+data["Date"] = pd.to_datetime(data["Date"])
+
+# Plot the historical trend of the unemployment rate
+plt.figure(figsize=(12, 6))
+sns.lineplot(x="Date", y="Unemployment Rate (%)", data=data)
+plt.title("Historical Trend of Unemployment Rate")
+plt.xlabel("Date")
+plt.ylabel("Unemployment Rate (%)")
+plt.xticks(rotation=45)
+plt.grid(True)
+plt.show()
+
+data["States"].value_counts()
+
+
+data.columns = ["States","Date","Frequency",
+               "Unemployment Rate (%)","Estimated Employed",
+               " Estimated Labour Participation Rate","Region","Longitude",
+               "Latitude"]
+plt.title("Indian Employment")
+sns.histplot(x ="Estimated Employed" , hue= "Region" , data = data)
+plt.show()
+
+
+plt.figure(figsize=(7,7))
+plt.title("Indian Unemployment")
+sns.histplot(x ="Unemployment Rate (%)" , hue= "Region" , data = data)
+plt.show()
+
+plt.figure(figsize=(7,7))
+plt.title("Indian Unemployment")
+sns.histplot(x = " Estimated Labour Participation Rate" , hue= "Region" , data = data)
+plt.show()
+
+# Assuming you have identified the Covid-19 impact period
+covid_start_date = pd.to_datetime("2020-03-01")
+covid_end_date = pd.to_datetime("2021-03-31")
+
+# Create two separate dataframes for pre-Covid and post-Covid periods
+pre_covid_data = data[data["Date"] < covid_start_date]
+post_covid_data = data[data["Date"] >= covid_start_date]
+
+# Calculate the average unemployment rates for pre-Covid and post-Covid periods
+avg_pre_covid_unemployment = pre_covid_data["Unemployment Rate (%)"].mean()
+avg_post_covid_unemployment = post_covid_data["Unemployment Rate (%)"].mean()
+
+print("Average Unemployment Rate Before Covid:", avg_pre_covid_unemployment)
+print("Average Unemployment Rate During Covid:", avg_post_covid_unemployment)
