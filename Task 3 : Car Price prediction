@@ -1,0 +1,97 @@
+import pandas as pd 
+import matplotlib.pyplot as plt 
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn import metrics
+
+
+car_data = pd.read_csv("CarPrice.csv")
+
+car_data.head()
+
+car_data.shape
+
+car_data.info()
+
+car_data.isnull().sum()
+
+print(car_data.CarName.value_counts())
+
+print(car_data.fueltype.value_counts())
+
+print(car_data.aspiration.value_counts())
+
+print(car_data.doornumber .value_counts())
+
+
+print(car_data.carbody.value_counts())
+
+print(car_data.drivewheel.value_counts())
+
+print(car_data.enginelocation.value_counts())
+
+print(car_data.fuelsystem.value_counts())
+
+print(car_data.enginetype.value_counts())
+
+print(car_data.cylindernumber.value_counts())
+
+print(car_data.CarName.value_counts())
+
+car_data.replace({'CarName':{'toyota corona':0,'toyota corolla':1, 'peugeot 504':2,'subaru dl':3 , 'mitsubishi mirage g4':4,
+                             'mazda glc 4':5, 'mazda rx2 coupe':6, 'maxda glc deluxe':7, 'maxda rx3':8, 'volvo 246':9 } },inplace=True)
+                             
+car_data.replace({'fueltype':{'gas':0,'diesel':1}},inplace=True)
+
+car_data.replace({'aspiration':{'std':0, 'turbo':1}},inplace=True)
+
+car_data.replace({'doornumber':{'four':4,'two':2}},inplace=True)
+
+car_data.replace({'carbody':{'sedan':0 ,'hatchback':1,'wagon':2,'hardtop':3,'convertible':4}},inplace=True)
+
+car_data.replace({'drivewheel':{'fwd':1,'rwd':2, '4wd':3}},inplace=True)
+
+car_data.replace({'enginelocation':{'front':0,'rear':1}},inplace=True)
+
+car_data.replace({'fuelsystem':{'mpfi': 0, '2bbl':1, 'idi':2,'1bbl':3, 'spdi':4,'4bbl':5,'mfi':6, 'spfi':7}},inplace=True)
+
+car_data.replace({'enginetype':{'ohc':0, 'ohcf':1,'ohcv':2,'dohc':3,'l':4, 'rotor':5, 'dohcv':6}}, inplace=True)
+
+car_data.replace({'cylindernumber':{'four':0, 'six':1, 'five':2, 'eight':3, 'two':4, 'three':5, 'twelve':6}}, inplace =True)
+
+car_data
+
+X = car_data.drop(['CarName'],axis=1)
+Y = car_data['price']
+
+print(X)
+print(Y)
+
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.1, random_state=2)
+
+model = LinearRegression()
+model.fit(X_train, Y_train)
+
+#training data prediction
+
+traning_data_prediction = model.predict(X_train)
+error_score = metrics.r2_score(Y_train, traning_data_prediction)
+print("R Square Error:",error_score)
+
+plt.scatter(Y_train, traning_data_prediction)
+plt.xlabel("Actual Price")
+plt.ylabel("Predicted Price")
+plt.title("Actual Prives vs Predicted Prices")
+plt.show()
+
+#test data prediction
+
+test_data_prediction = model.predict(X_test)
+error_score = metrics.r2_score(Y_test, test_data_prediction)
+print("R Square Error:",error_score)
+plt.scatter(Y_test, test_data_prediction)
+plt.xlabel("Actual Price")
+plt.ylabel("Predicted Price")
+plt.title("Actual Prives vs Predicted Prices")
+plt.show()
